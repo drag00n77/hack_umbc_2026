@@ -15,3 +15,4 @@ Details:
 
 Hopeful:
  - User can connect to slack channel to have the application send the vulnerabilites to the entire team channel
+ - Work on having the application being able to handle all sorts of data
