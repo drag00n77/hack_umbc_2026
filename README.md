@@ -48,3 +48,26 @@ To finish setting up your README, let me know:Do you need the exact Prerequisite
 * **Ankit:** Look into linking the frontend and the backend
 
 
+* **Helpful Notes from Workshop to win your first Hackathon:**
+  
+### 1. UI Design 
+* **Stitch:** Use Stitch platform to create UI design 
+* **Appearance:** Create a polished UI. It can be minimalistic. 
+
+### 2. Tips to winning your first Hackathon 
+* **Creativity:** Make sure that your app is creative
+* **Impact:** Ask yourself is your project helping only one person or multiple people (thousands).
+
+### 3. Application Development 
+* **Antigravity IDE:** Builds apps fast
+
+### 4. Effective Prompt Writing: From Good to Powerful 
+* **Give a Role**
+* **Define the Goal**
+* **Provide Context**
+* **Does it Need AI**
+* **Create the Vibe**
+* **Optional: Add a visual** 
+
+### 4. Presentation 
+* **Time Limit:** Make sure that you are able to present your product and demonstrate it within 4 minutes. 
