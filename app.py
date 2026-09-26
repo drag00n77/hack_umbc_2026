@@ -7,13 +7,13 @@ st.set_page_config(
 
 st.title("Vulnerability Detection & Response")
 
-// URL link paste
+# URL link paste
 target = st.text_input(
     "Target URL",
-    placeholder="http://localhost:3000"
+    placeholder="http://exmaple"
 )
 
-// Running DAST
+# Running DAST
 if st.button("Run DAST Scan"):
     if target:
         st.info(f"Preparing scan for: {target}")
