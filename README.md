@@ -48,7 +48,7 @@ To finish setting up your README, let me know:Do you need the exact Prerequisite
 * **Ankit:** Look into linking the frontend and the backend
 
 
-* **Helpful Notes from Workshop to win your first Hackathon:**
+## Helpful Notes from Workshop to win your first Hackathon
   
 ### 1. UI Design 
 * **Stitch:** Use Stitch platform to create UI design 
