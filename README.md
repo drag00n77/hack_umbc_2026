@@ -45,6 +45,6 @@ To finish setting up your README, let me know:Do you need the exact Prerequisite
 * **Jayden:** Look into DAST intergratrion
 * **Brittany:** Look into Google Gemini API integration (https://aistudio.google.com/docs/api-key)
 * **Michael:** Look into frontend implementation
-* **Akirit:** Look into linking the frontend and the backend
+* **Ankit:** Look into linking the frontend and the backend
 
 
