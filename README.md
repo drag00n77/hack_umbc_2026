@@ -12,3 +12,6 @@ Details:
   - Design backend to be able to communicate with ... (between the website and the Gemini API)
   - Add tabs for explaining how it can be exploited or fixed (frontend)
   - Gemini API explains how to fix/exploit (backend)
+
+Hopeful:
+ - User can connect to slack channel to have the application send the vulnerabilites to the entire team channel
