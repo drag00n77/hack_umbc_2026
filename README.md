@@ -70,4 +70,7 @@ To finish setting up your README, let me know:Do you need the exact Prerequisite
 * **Optional: Add a visual** 
 
 ### 4. Presentation 
-* **Time Limit:** Make sure that you are able to present your product and demonstrate it within 4 minutes. 
+* **Time Limit:** Make sure that you are able to present your product and demonstrate it within 4 minutes.
+
+### 5. ChatGPT Suggestion 
+* **Elevating our Project to the next level:** (https://chatgpt.com/share/6ab83fc1-b830-83e9-9852-d22558304129)
