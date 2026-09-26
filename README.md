@@ -40,3 +40,11 @@ Hopeful:
 * **Nuclei API:** Executes rapid, template-driven active scans to check for known zero-days and misconfigurations.
 * **Slack Webhooks:** Formats critical discoveries into interactive Slack Block Kit alerts for real-time team notifications.
 To finish setting up your README, let me know:Do you need the exact Prerequisites and Installation steps (like Docker setup or API key variables)?Would you like a ready-to-paste markdown table for the project roadmap?Do you want the GitHub badges configuration code for your tech stack?Try without personalization
+
+### Team Tasks
+* **Jayden:** Look into DAST intergratrion
+* **Brittany:** Look into Google Gemini API integration
+* **Michael:** Look into frontend implementation
+* **Akirit:** Look into linking the frontend and the backend
+
+
