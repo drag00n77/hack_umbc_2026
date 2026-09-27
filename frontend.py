@@ -1,7 +1,5 @@
 import streamlit as st
-import streamlit.components.v1 as components
 import requests
-from pyvis.network import Network
 
 API_URL = "http://127.0.0.1:8000"
 
@@ -107,114 +105,6 @@ if scan_button:
             )
 
 # ---------------------------------
-# Network graph builder
-# ---------------------------------
- 
-def build_graph(target, vulnerabilities, out_path):
-    """
-    Generates an interactive PyVis graph connecting
-    Scanner (source) -> Finding -> Target URL
-    """
-    net = Network(
-        height="700px",
-        width="100%",
-        bgcolor="#1a1a1a",
-        font_color="#ffffff",
-        directed=True,
-        cdn_resources="remote"
-    )
- 
-    net.barnes_hut(
-        gravity=-6000,
-        central_gravity=0.3,
-        spring_length=140,
-        spring_strength=0.04,
-        damping=0.09
-    )
- 
-    scanner = "DAST Scanner"
- 
-    # Source node
-    net.add_node(
-        scanner,
-        label=f"🛡️ {scanner}",
-        color="#2ecc71",
-        shape="hexagon",
-        size=35,
-        title=f"<b>Log Source:</b> {scanner}"
-    )
- 
-    # Target endpoint node
-    short_url = target.split("//")[-1] if "//" in target else target
-    display_url = short_url[:35] + ("..." if len(short_url) > 35 else "")
-    net.add_node(
-        target,
-        label=display_url,
-        color="#34495e",
-        shape="box",
-        size=25,
-        title=f"<b>Target:</b><br>{target}"
-    )
- 
-    net.add_edge(scanner, target, color="#7f8c8d", width=1, hidden=True)
- 
-    for idx, vuln in enumerate(vulnerabilities):
-        name = vuln.get("name", "Unknown Finding")
-        severity = vuln.get("severity", "Unknown")
-        description = vuln.get("description", "No description available.")
-        recommendation = vuln.get("recommendation", "No recommendation available.")
-        finding_id = vuln.get("id", f"finding_{idx}")
- 
-        color = RISK_COLOR.get(str(severity).title(), "#95a5a6")
-        node_id = f"node_{idx}_{finding_id}"
- 
-        tooltip_html = f"""
-        <div style='font-family: sans-serif; padding: 6px; max-width: 280px;'>
-            <b style='color: {color};'>[{str(severity).upper()}] {name}</b><br/>
-            <b>Description:</b> {description}<br/>
-            <b>Recommendation:</b> {recommendation}
-        </div>
-        """
- 
-        net.add_node(
-            node_id,
-            label=name,
-            color=color,
-            shape="diamond",
-            size=22,
-            title=tooltip_html
-        )
- 
-        net.add_edge(scanner, node_id, color="#7f8c8d", width=1.5)
-        net.add_edge(node_id, target, color=color, width=2)
- 
-    net.set_options("""
-    var options = {
-      "nodes": {
-        "borderWidth": 2,
-        "font": { "size": 13, "face": "arial" },
-        "shadow": true
-      },
-      "edges": {
-        "smooth": { "type": "continuous" },
-        "shadow": true
-      },
-      "interaction": {
-        "hover": true,
-        "hoverConnectedEdges": true,
-        "selectConnectedEdges": true,
-        "navigationButtons": true,
-        "tooltipDelay": 50
-      },
-      "physics": {
-        "enabled": true,
-        "stabilization": { "iterations": 100 }
-      }
-    }
-    """)
- 
-    net.write_html(out_path, notebook=False, open_browser=False)
-# ---------------------------------
 # Display results
 # ---------------------------------
 
@@ -287,11 +177,10 @@ if "scan_results" in st.session_state:
     # Tabs
     # ---------------------------------
 
-    overview_tab, vulnerabilities_tab, graph_tab, gemini_tab = st.tabs(
+    overview_tab, vulnerabilities_tab, gemini_tab = st.tabs(
         [
             "Overview",
             "Vulnerabilities",
-            "Graph",
             "Gemini Suggestion"
         ]
     )
@@ -400,22 +289,104 @@ if "scan_results" in st.session_state:
                     st.write(
                         recommendation
                     )
- # ---------------------------------
-    # Network Graph
-    # ---------------------------------
- 
-    with graph_tab:
- 
-        vulnerabilities = data.get("vulnerabilities", [])
-        target = data.get("target", "Unknown")
- 
-        if not vulnerabilities:
-            st.info("No findings to visualize yet.")
-        else:
-            graph_path = "dast_graph_tmp.html"
-            build_graph(target, vulnerabilities, graph_path)
- 
-            with open(graph_path, "r", encoding="utf-8") as f:
-                components.html(f.read(), height=720, scrolling=True)
 
-        
+
+ # ---------------------------------
+    # Gemini Suggestion
+ # ---------------------------------
+    with gemini_tab:
+        st.subheader("Gemini Security Suggestions")
+
+    st.caption(
+        "AI-generated remediation guidance based on "
+        "the vulnerabilities found by the DAST scanner."
+    )
+
+    ai_analysis = data.get(
+        "ai_analysis"
+    )
+
+    # No Gemini response
+    if not ai_analysis:
+
+        st.info(
+            "No Gemini remediation suggestions "
+            "are available for this scan."
+        )
+
+    else:
+
+        remediations = ai_analysis.get(
+            "remediations",
+            []
+        )
+
+        # Gemini responded but there are no suggestions
+        if not remediations:
+
+            st.info(
+                "Gemini did not return any "
+                "remediation suggestions."
+            )
+
+        else:
+
+            st.write(
+                f"Gemini generated "
+                f"{len(remediations)} suggestion(s)."
+            )
+
+            for remediation in remediations:
+
+                finding_id = remediation.get(
+                    "finding_id",
+                    "Unknown"
+                )
+
+                vulnerability = remediation.get(
+                    "vulnerability",
+                    "Unknown Vulnerability"
+                )
+
+                explanation = remediation.get(
+                    "explanation",
+                    "No explanation available."
+                )
+
+                suggestion = remediation.get(
+                    "remediation",
+                    "No remediation available."
+                )
+
+                verification = remediation.get(
+                    "verification",
+                    "No verification steps available."
+                )
+
+                with st.expander(
+                    f"{finding_id} — {vulnerability}"
+                ):
+
+                    st.markdown(
+                        "#### Explanation"
+                    )
+
+                    st.write(
+                        explanation
+                    )
+
+                    st.markdown(
+                        "#### Suggested Remediation"
+                    )
+
+                    st.write(
+                        suggestion
+                    )
+
+                    st.markdown(
+                        "#### Verification"
+                    )
+
+                    st.write(
+                        verification
+                    )
