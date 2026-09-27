@@ -245,99 +245,99 @@ if "scan_results" in st.session_state:
  # ---------------------------------
     # Gemini Suggestion
  # ---------------------------------
-with gemini_tab:
-    st.subheader("Gemini Security Suggestions")
+    with gemini_tab:
+        st.subheader("Gemini Security Suggestions")
 
-    st.caption(
-        "AI-generated remediation guidance based on "
-        "the vulnerabilities found by the DAST scanner."
-    )
-
-    ai_analysis = data.get(
-        "ai_analysis"
-    )
-
-    # No Gemini response
-    if not ai_analysis:
-
-        st.info(
-            "No Gemini remediation suggestions "
-            "are available for this scan."
+        st.caption(
+            "AI-generated remediation guidance based on "
+            "the vulnerabilities found by the DAST scanner."
         )
 
-    else:
-
-        remediations = ai_analysis.get(
-            "remediations",
-            []
+        ai_analysis = data.get(
+            "ai_analysis"
         )
 
-        # Gemini responded but there are no suggestions
-        if not remediations:
+        # No Gemini response
+        if not ai_analysis:
 
             st.info(
-                "Gemini did not return any "
-                "remediation suggestions."
+                "No Gemini remediation suggestions "
+                "are available for this scan."
             )
 
         else:
 
-            st.write(
-                f"Gemini generated "
-                f"{len(remediations)} suggestion(s)."
+            remediations = ai_analysis.get(
+                "remediations",
+                []
             )
 
-            for remediation in remediations:
+            # Gemini responded but there are no suggestions
+            if not remediations:
 
-                finding_id = remediation.get(
-                    "finding_id",
-                    "Unknown"
+                st.info(
+                    "Gemini did not return any "
+                    "remediation suggestions."
                 )
 
-                vulnerability = remediation.get(
-                    "vulnerability",
-                    "Unknown Vulnerability"
+            else:
+
+                st.write(
+                    f"Gemini generated "
+                    f"{len(remediations)} suggestion(s)."
                 )
 
-                explanation = remediation.get(
-                    "explanation",
-                    "No explanation available."
-                )
+                for remediation in remediations:
 
-                suggestion = remediation.get(
-                    "remediation",
-                    "No remediation available."
-                )
-
-                verification = remediation.get(
-                    "verification",
-                    "No verification steps available."
-                )
-
-                with st.expander(
-                    f"{finding_id} — {vulnerability}"
-                ):
-
-                    st.markdown(
-                        "#### Explanation"
+                    finding_id = remediation.get(
+                        "finding_id",
+                        "Unknown"
                     )
 
-                    st.write(
-                        explanation
+                    vulnerability = remediation.get(
+                        "vulnerability",
+                        "Unknown Vulnerability"
                     )
 
-                    st.markdown(
-                        "#### Suggested Remediation"
+                    explanation = remediation.get(
+                        "explanation",
+                        "No explanation available."
                     )
 
-                    st.write(
-                        suggestion
+                    suggestion = remediation.get(
+                        "remediation",
+                        "No remediation available."
                     )
 
-                    st.markdown(
-                        "#### Verification"
+                    verification = remediation.get(
+                        "verification",
+                        "No verification steps available."
                     )
 
-                    st.write(
-                        verification
-                    )
+                    with st.expander(
+                        f"{finding_id} — {vulnerability}"
+                    ):
+
+                        st.markdown(
+                            "#### Explanation"
+                        )
+
+                        st.write(
+                            explanation
+                        )
+
+                        st.markdown(
+                            "#### Suggested Remediation"
+                        )
+
+                        st.write(
+                            suggestion
+                        )
+
+                        st.markdown(
+                            "#### Verification"
+                        )
+
+                        st.write(
+                            verification
+                        )
