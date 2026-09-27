@@ -35,16 +35,17 @@ class ScanRequest(BaseModel):
     url: HttpUrl
 
 
+class GeminiRemediation(BaseModel):
+    finding_id: str
+    vulnerability: str
+    explanation: str
+    remediation: str
+    verification: str
+
+
 class GeminiAnalysis(BaseModel):
-    overview: str = Field(
-        description="A concise overall security assessment based only on the supplied findings."
-    )
-    key_risks: List[str] = Field(
-        description="The most important security concerns represented by the findings."
-    )
-    recommendations: List[str] = Field(
-        description="Practical remediation suggestions based only on the supplied findings."
-    )
+    overview: str
+    remediations: List[GeminiRemediation]
 
 
 # ==========================================
