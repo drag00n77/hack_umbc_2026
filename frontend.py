@@ -259,11 +259,11 @@ if "scan_results" in st.session_state:
                     "id",
                     "Unknown"
                 )
-
+                '''
                 with st.expander(
                     f"{severity.upper()} — {name}"
                 ):
-                    '''
+                
                     st.write(
                         "**Finding ID:**",
                         finding_id
