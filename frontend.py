@@ -216,80 +216,32 @@ if "scan_results" in st.session_state:
 
     with vulnerabilities_tab:
 
-        vulnerabilities = data.get(
-            "vulnerabilities",
-            []
+    vulnerabilities = data.get(
+        "vulnerabilities",
+        []
+    )
+
+    st.subheader(
+        f"Vulnerabilities Found ({len(vulnerabilities)})"
+    )
+
+    if not vulnerabilities:
+
+        st.success(
+            "No vulnerabilities were found."
         )
 
-        st.subheader(
-            f"Vulnerabilities ({len(vulnerabilities)})"
-        )
+    else:
 
-        if not vulnerabilities:
+        for vulnerability in vulnerabilities:
 
-            st.success(
-                "No findings were returned by the scanner."
+            name = vulnerability.get(
+                "name",
+                "Unknown Vulnerability"
             )
 
-        else:
-
-            for vulnerability in vulnerabilities:
-
-                name = vulnerability.get(
-                    "name",
-                    "Unknown Finding"
-                )
-
-                severity = vulnerability.get(
-                    "severity",
-                    "Unknown"
-                )
-
-                description = vulnerability.get(
-                    "description",
-                    "No description available."
-                )
-
-                recommendation = vulnerability.get(
-                    "recommendation",
-                    "No recommendation available."
-                )
-
-                finding_id = vulnerability.get(
-                    "id",
-                    "Unknown"
-                )
-                '''
-                with st.expander(
-                    f"{severity.upper()} — {name}"
-                ):
-                
-                    st.write(
-                        "**Finding ID:**",
-                        finding_id
-                    )
-
-                    st.write(
-                        "**Severity:**",
-                        severity
-                    )
-
-                    st.write(
-                        "**Description:**"
-                    )
-
-                    st.write(
-                        description
-                    )
-
-                    st.write(
-                        "**Recommendation:**"
-                    )
-
-                    st.write(
-                        recommendation
-                    )
-                    '''
+            st.write(f"• {name}")
+                    
 
  # ---------------------------------
     # Gemini Suggestion
