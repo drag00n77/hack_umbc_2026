@@ -216,29 +216,29 @@ if "scan_results" in st.session_state:
 
     with vulnerabilities_tab:
 
-    vulnerabilities = data.get(
-        "vulnerabilities",
-        []
-    )
-
-    st.subheader(
-        f"Vulnerabilities Found ({len(vulnerabilities)})"
-    )
-
-    if not vulnerabilities:
-
-        st.success(
-            "No vulnerabilities were found."
+        vulnerabilities = data.get(
+            "vulnerabilities",
+            []
         )
 
-    else:
+        st.subheader(
+            f"Vulnerabilities Found ({len(vulnerabilities)})"
+        )
 
-        for vulnerability in vulnerabilities:
+        if not vulnerabilities:
 
-            name = vulnerability.get(
-                "name",
-                "Unknown Vulnerability"
+            st.success(
+                "No vulnerabilities were found."
             )
+
+        else:
+
+            for vulnerability in vulnerabilities:
+
+                name = vulnerability.get(
+                    "name",
+                    "Unknown Vulnerability"
+                )
 
             st.write(f"• {name}")
                     
