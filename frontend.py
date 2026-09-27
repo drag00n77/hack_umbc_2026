@@ -263,7 +263,7 @@ if "scan_results" in st.session_state:
                 with st.expander(
                     f"{severity.upper()} — {name}"
                 ):
-
+                    '''
                     st.write(
                         "**Finding ID:**",
                         finding_id
@@ -289,7 +289,7 @@ if "scan_results" in st.session_state:
                     st.write(
                         recommendation
                     )
-
+                    '''
 
  # ---------------------------------
     # Gemini Suggestion
