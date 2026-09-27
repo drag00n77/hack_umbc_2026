@@ -16,15 +16,34 @@ from google.genai import types
 
 app = FastAPI(title="Security Scanner API")
 
-DAST_URL = os.getenv("DAST_URL", "http://127.0.0.1:9000")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
-GEMINI_TIMEOUT_SECONDS = float(os.getenv("GEMINI_TIMEOUT_SECONDS", "30"))
+DAST_URL = os.getenv(
+    "DAST_URL",
+    "http://127.0.0.1:9000"
+)
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = os.getenv(
+    "GEMINI_MODEL",
+    "gemini-3.8-flash"
+)
+
+GEMINI_TIMEOUT_SECONDS = float(
+    os.getenv(
+        "GEMINI_TIMEOUT_SECONDS",
+        "30"
+    )
+)
+
+# GitHub Codespaces provides this as an environment variable.
+GEMINI_API_KEY = os.getenv(
+    "GEMINI_API_KEY"
+)
 
 gemini_client = None
+
 if GEMINI_API_KEY:
-    gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+    gemini_client = genai.Client(
+        api_key=GEMINI_API_KEY
+    )
 
 
 # ==========================================
@@ -36,16 +55,50 @@ class ScanRequest(BaseModel):
 
 
 class GeminiRemediation(BaseModel):
-    finding_id: str
-    vulnerability: str
-    explanation: str
-    remediation: str
-    verification: str
+    finding_id: str = Field(
+        description="The ID of the DAST finding."
+    )
+
+    vulnerability: str = Field(
+        description="The name of the security finding."
+    )
+
+    explanation: str = Field(
+        description=(
+            "Explain what the finding means and "
+            "its potential security impact."
+        )
+    )
+
+    remediation: str = Field(
+        description=(
+            "Provide practical steps to remediate "
+            "the security finding."
+        )
+    )
+
+    verification: str = Field(
+        description=(
+            "Explain how to verify that the "
+            "remediation was correctly applied."
+        )
+    )
 
 
 class GeminiAnalysis(BaseModel):
-    overview: str
-    remediations: List[GeminiRemediation]
+    overview: str = Field(
+        description=(
+            "A concise overall interpretation of "
+            "the DAST scan results."
+        )
+    )
+
+    remediations: List[GeminiRemediation] = Field(
+        description=(
+            "AI-generated remediation guidance "
+            "for the supplied DAST findings."
+        )
+    )
 
 
 # ==========================================
@@ -54,22 +107,35 @@ class GeminiAnalysis(BaseModel):
 
 @app.get("/health")
 async def health():
+
     dast_status = "offline"
 
     try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            response = await client.get(f"{DAST_URL}/health")
+
+        async with httpx.AsyncClient(
+            timeout=5.0
+        ) as client:
+
+            response = await client.get(
+                f"{DAST_URL}/health"
+            )
+
             response.raise_for_status()
 
         dast_status = "online"
 
     except httpx.HTTPError:
+
         dast_status = "offline"
 
     return {
         "api": "online",
         "dast": dast_status,
-        "gemini": "configured" if gemini_client else "not configured",
+        "gemini": (
+            "configured"
+            if gemini_client
+            else "not configured"
+        ),
         "gemini_model": GEMINI_MODEL
     }
 
@@ -78,23 +144,34 @@ async def health():
 # GEMINI ANALYSIS
 # ==========================================
 
-async def analyze_findings(target: str, findings: list) -> GeminiAnalysis:
-    """
-    Sends the DAST findings to Gemini for explanation and remediation suggestions.
+async def analyze_findings(
+    target: str,
+    findings: list
+) -> GeminiAnalysis:
 
-    Gemini is given the scanner's findings rather than direct access to the target.
+    """
+    Sends the DAST findings to Gemini for
+    interpretation and remediation guidance.
+
+    Gemini does not directly scan the target.
+    It analyzes only the findings produced
+    by the DAST scanner.
     """
 
     if gemini_client is None:
+
         raise RuntimeError(
             "GEMINI_API_KEY is not configured."
         )
 
-    findings_json = json.dumps(findings, indent=2)
+    findings_json = json.dumps(
+        findings,
+        indent=2
+    )
 
     prompt = f"""
-You are a cybersecurity analyst reviewing the results of an authorized,
-passive web security scan.
+You are a cybersecurity analyst reviewing the results
+of an authorized passive web security scan.
 
 Target:
 {target}
@@ -102,42 +179,79 @@ Target:
 Scanner findings:
 {findings_json}
 
-Your task is to analyze ONLY the findings supplied above.
+Analyze ONLY the findings provided by the scanner.
 
 Return:
+
 1. A concise overall security overview.
-2. The key security risks represented by the findings.
-3. Practical recommendations for addressing those findings.
+2. A remediation object for each supplied finding.
+
+Each remediation must contain:
+
+- finding_id
+- vulnerability
+- explanation
+- remediation
+- verification
 
 Rules:
+
 - Do not invent vulnerabilities.
+- Do not create findings that were not supplied.
+- Use the exact finding ID provided by the scanner.
 - Do not claim that a configuration issue is automatically exploitable.
-- Do not add findings that are not present in the scanner results.
-- Keep the scanner's severity classifications intact.
-- Explain the potential impact without overstating certainty.
-- Recommendations should be actionable and technically appropriate.
-- If there are no findings, explain that no issues were returned by this scan.
+- Explain potential security impact without overstating certainty.
+- Keep the scanner's severity classification unchanged.
+- Recommendations must be practical and technically appropriate.
+- Verification should explain how a developer can confirm
+  that the issue has been addressed.
+- Base the response only on the supplied scanner findings.
+- If there are no findings, return an overview explaining
+  that no findings were returned and return an empty
+  remediations list.
 - Keep the overview concise enough for a security dashboard.
 """
 
-    response = await asyncio.wait_for(
-        gemini_client.aio.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json",
-                response_schema=GeminiAnalysis,
+    try:
+
+        response = await asyncio.wait_for(
+            gemini_client.aio.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=GeminiAnalysis
+                )
             ),
-        ),
-        timeout=GEMINI_TIMEOUT_SECONDS,
-    )
+            timeout=GEMINI_TIMEOUT_SECONDS
+        )
+
+    except asyncio.TimeoutError as error:
+
+        raise RuntimeError(
+            "Gemini analysis timed out."
+        ) from error
+
+    except Exception as error:
+
+        raise RuntimeError(
+            f"Gemini API request failed: {error}"
+        ) from error
 
     if not response.text:
-        raise RuntimeError("Gemini returned an empty response.")
+
+        raise RuntimeError(
+            "Gemini returned an empty response."
+        )
 
     try:
-        return GeminiAnalysis.model_validate_json(response.text)
+
+        return GeminiAnalysis.model_validate_json(
+            response.text
+        )
+
     except Exception as error:
+
         raise RuntimeError(
             f"Gemini returned invalid structured output: {error}"
         ) from error
@@ -151,7 +265,8 @@ Rules:
 async def start_scan(request: ScanRequest):
 
     print(
-        f"FastAPI: received scan request for {request.url}"
+        f"FastAPI: received scan request "
+        f"for {request.url}"
     )
 
     # --------------------------------------
@@ -159,6 +274,7 @@ async def start_scan(request: ScanRequest):
     # --------------------------------------
 
     try:
+
         async with httpx.AsyncClient(
             timeout=35.0
         ) as client:
@@ -171,7 +287,10 @@ async def start_scan(request: ScanRequest):
             )
 
     except httpx.ConnectError as error:
-        print(f"Cannot connect to DAST: {error}")
+
+        print(
+            f"Cannot connect to DAST: {error}"
+        )
 
         raise HTTPException(
             status_code=502,
@@ -182,19 +301,29 @@ async def start_scan(request: ScanRequest):
         )
 
     except httpx.TimeoutException as error:
-        print(f"DAST timeout: {error}")
+
+        print(
+            f"DAST timeout: {error}"
+        )
 
         raise HTTPException(
             status_code=504,
-            detail="The DAST service took too long to respond."
+            detail=(
+                "The DAST service took too long to respond."
+            )
         )
 
     except httpx.RequestError as error:
-        print(f"DAST request error: {error}")
+
+        print(
+            f"DAST request error: {error}"
+        )
 
         raise HTTPException(
             status_code=502,
-            detail=f"Error communicating with DAST service: {error}"
+            detail=(
+                f"Error communicating with DAST service: {error}"
+            )
         )
 
     # --------------------------------------
@@ -202,16 +331,26 @@ async def start_scan(request: ScanRequest):
     # --------------------------------------
 
     if response.status_code >= 400:
+
         try:
+
             error_data = response.json()
+
             detail = error_data.get(
                 "detail",
                 "DAST scan failed."
             )
-        except Exception:
-            detail = response.text or "DAST scan failed."
 
-        print(f"DAST scan error: {detail}")
+        except Exception:
+
+            detail = (
+                response.text
+                or "DAST scan failed."
+            )
+
+        print(
+            f"DAST scan error: {detail}"
+        )
 
         raise HTTPException(
             status_code=response.status_code,
@@ -223,18 +362,26 @@ async def start_scan(request: ScanRequest):
     # --------------------------------------
 
     try:
+
         dast_result = response.json()
+
     except ValueError as error:
+
         raise HTTPException(
             status_code=502,
-            detail="DAST returned an invalid JSON response."
+            detail=(
+                "DAST returned an invalid JSON response."
+            )
         ) from error
 
     # --------------------------------------
     # GET FINDINGS
     # --------------------------------------
 
-    findings = dast_result.get("findings", [])
+    findings = dast_result.get(
+        "findings",
+        []
+    )
 
     # --------------------------------------
     # BUILD SEVERITY SUMMARY
@@ -248,11 +395,16 @@ async def start_scan(request: ScanRequest):
     }
 
     for finding in findings:
+
         severity = str(
-            finding.get("severity", "")
+            finding.get(
+                "severity",
+                ""
+            )
         ).lower()
 
         if severity in summary:
+
             summary[severity] += 1
 
     # --------------------------------------
@@ -264,6 +416,7 @@ async def start_scan(request: ScanRequest):
     ai_error = None
 
     try:
+
         ai_result = await analyze_findings(
             target=dast_result.get(
                 "target",
@@ -273,6 +426,7 @@ async def start_scan(request: ScanRequest):
         )
 
         ai_analysis = ai_result.model_dump()
+
         ai_status = "completed"
 
         print(
@@ -280,6 +434,7 @@ async def start_scan(request: ScanRequest):
         )
 
     except Exception as error:
+
         ai_error = str(error)
 
         print(
@@ -291,26 +446,46 @@ async def start_scan(request: ScanRequest):
     # --------------------------------------
 
     result = {
-        "scan_id": dast_result.get("scan_id"),
+        "scan_id": dast_result.get(
+            "scan_id"
+        ),
+
         "target": dast_result.get(
             "target",
             str(request.url)
         ),
-        "final_url": dast_result.get("final_url"),
-        "http_status": dast_result.get("http_status"),
-        "status": dast_result.get("status", "completed"),
+
+        "final_url": dast_result.get(
+            "final_url"
+        ),
+
+        "http_status": dast_result.get(
+            "http_status"
+        ),
+
+        "status": dast_result.get(
+            "status",
+            "completed"
+        ),
+
         "summary": summary,
+
         "vulnerabilities": findings,
-        "ai": {
-            "status": ai_status,
-            "model": GEMINI_MODEL,
-            "analysis": ai_analysis,
-            "error": ai_error
-        }
+
+        # This matches your frontend.py
+        "ai_analysis": ai_analysis,
+
+        "ai_status": ai_status,
+
+        "ai_error": ai_error,
+
+        "ai_model": GEMINI_MODEL
     }
 
     print(
-        f"FastAPI: sending {len(findings)} findings to frontend"
+        f"FastAPI: sending "
+        f"{len(findings)} findings "
+        f"to frontend"
     )
 
     return result
