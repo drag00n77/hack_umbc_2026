@@ -287,10 +287,11 @@ if "scan_results" in st.session_state:
     # Tabs
     # ---------------------------------
 
-    overview_tab, vulnerabilities_tab = st.tabs(
+    overview_tab, vulnerabilities_tab, graph_tab = st.tabs(
         [
             "Overview",
-            "Vulnerabilities"
+            "Vulnerabilities",
+            "Graph"
         ]
     )
 
