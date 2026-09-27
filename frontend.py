@@ -1,17 +1,9 @@
 import streamlit as st
 import requests
+import streamlit.components.v1 as components
 
 API_URL = "http://127.0.0.1:8000"
 
-#graph
-RISK_COLOR = {
-    "Critical": "#e74c3c",
-    "High": "#e67e22",
-    "Medium": "#f1c40f",
-    "Low": "#3498db",
-    "Informational": "#95a5a6",
-    "Unknown": "#95a5a6",
-}
 
 
 # ---------------------------------
@@ -29,6 +21,13 @@ st.caption("Streamlit → FastAPI → DAST")
 
 st.divider()
 
+def load_stitch_ui(file_path):
+    """Helper function to safely read the HTML file."""
+    with open(file_path, "r", encoding="utf-8") as f:
+        return f.read()
+
+stitch_html = load_stitch_ui("stitch_ui.html")
+components.html(stitch_html, height=800, scrolling=True)
 
 # ---------------------------------
 # Target URL
