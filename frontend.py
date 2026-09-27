@@ -240,7 +240,7 @@ if "scan_results" in st.session_state:
                     "Unknown Vulnerability"
                 )
 
-            st.write(f"• {name}")
+                st.write(f"• {name}")
                     
 
  # ---------------------------------
