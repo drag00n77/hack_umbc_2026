@@ -1,17 +1,17 @@
 # 🛡️ ZAPini
 Team JBAM
 
-An automated web vulnerability dashboard that turns raw security scans into actionable roadmaps. 
+An automated web vulnerability dashboard that turns security scans into actionable roadmaps. 
 
-Unlike traditional scanners that just dump a list of flaws, **ZAPini** closes the  loop by executing a **Scan ➔ Understand ➔ Prioritize ➔ Remediate ➔ Verify** workflow. It leverages **OWASP ZAP** for target scanning, a **FastAPI** backend for data orchestration, **Gemini AI** for expert intelligence, and a responsive **Streamlit** user interface.
+Unlike traditional scanners that just dump a list of flaws, **ZAPini** does a **Scan ➔ Understand ➔ Prioritize ➔ Remediate ➔ Verify** workflow. It leverages **OWASP ZAP** for scanning, a **FastAPI** backend for data communication, **Gemini API** for expert intelligence, and a responsive **Streamlit** user interface integrated with Google Stitch UI.
 
 ---
 
 ## 🔄 The Closed-Loop Lifecycle
 
-Rather than simply displaying a list of vulnerabilities, **ZAPini** creates an interactive, closed-loop pipeline:
+Rather than simply displaying a list of vulnerabilities, **ZAPini** creates an interactive pipeline:
 
-1. **Scan:** OWASP ZAP scans the authorized target application and collects raw vulnerability findings.
+1. **Scan:** OWASP ZAP scans the target application and collects raw vulnerability findings.
 2. **Understand:** The backend normalizes the logs and passes them to Gemini for clear explanations, impact analysis, and practical remediation guidance.
 3. **Prioritize:** Gemini analyzes the collection of findings globally and prioritizes which vulnerabilities should be addressed first based on severity, evidence, exposure, and potential impact.
 4. **Remediate:** The dashboard provides testers and developers with explicit exploit walkthroughs and production-ready source code fixes.
