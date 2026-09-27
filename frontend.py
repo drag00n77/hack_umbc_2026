@@ -65,7 +65,7 @@ if scan_button:
                     json={
                         "url": target_url
                     },
-                    timeout=30
+                    timeout=90
                 )
 
                 response.raise_for_status()
@@ -245,8 +245,8 @@ if "scan_results" in st.session_state:
  # ---------------------------------
     # Gemini Suggestion
  # ---------------------------------
-    with gemini_tab:
-        st.subheader("Gemini Security Suggestions")
+with gemini_tab:
+    st.subheader("Gemini Security Suggestions")
 
     st.caption(
         "AI-generated remediation guidance based on "
