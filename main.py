@@ -20,7 +20,7 @@ DAST_URL = os.getenv("DAST_URL", "http://127.0.0.1:9000")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 GEMINI_TIMEOUT_SECONDS = float(os.getenv("GEMINI_TIMEOUT_SECONDS", "30"))
 
-GEMINI_API_KEY = os.getenv("AQ.Ab8RN6IQlbhYTJZhwWZ0rw5CdGCk6EX8HFsveMdZcrNzUNDiGg")
+GEMINI_API_KEY = os.getenv("AQ.Ab8RN6IxfY0Os1_uJk4TjO-vC066MhmbivoBmICOZpntpKpErA")
 
 gemini_client = None
 if GEMINI_API_KEY:
