@@ -287,11 +287,12 @@ if "scan_results" in st.session_state:
     # Tabs
     # ---------------------------------
 
-    overview_tab, vulnerabilities_tab, graph_tab = st.tabs(
+    overview_tab, vulnerabilities_tab, graph_tab, gemini_tab = st.tabs(
         [
             "Overview",
             "Vulnerabilities",
-            "Graph"
+            "Graph",
+            "Gemini Suggestion"
         ]
     )
 
@@ -416,3 +417,5 @@ if "scan_results" in st.session_state:
  
             with open(graph_path, "r", encoding="utf-8") as f:
                 components.html(f.read(), height=720, scrolling=True)
+
+        
