@@ -1,4 +1,4 @@
-# 🛡️ ZAPini
+# 🛡️ ZAPini - Run DEMO branch for testing
 
 ### Team JBAM
 
