@@ -1,123 +1,233 @@
-# 🛡️ ZAPini - RUN DEMO BRANCH FOR TESTING
-Team JBAM
+# 🛡️ ZAPini
 
-An automated web vulnerability dashboard that turns security scans into actionable roadmaps. 
+### Team JBAM
 
-Unlike traditional scanners that just dump a list of flaws, **ZAPini** does a **Scan ➔ Understand ➔ Prioritize ➔ Remediate ➔ Verify** workflow. It leverages **OWASP ZAP** for scanning, a **FastAPI** backend for data communication, **Gemini API** for expert intelligence, and a responsive **Streamlit** user interface integrated with Google Stitch UI.
+**ZAPini** is an automated web vulnerability dashboard designed to turn security scan results into a simple, actionable workflow.
 
----
+Our original goal was to create a closed-loop security platform:
 
-## 🔄 The Closed-Loop Lifecycle
+**Scan → Understand → Prioritize → Remediate → Verify**
 
-Rather than simply displaying a list of vulnerabilities, **ZAPini** creates an interactive pipeline:
-
-1. **Scan:** OWASP ZAP scans the target application and collects raw vulnerability findings.
-2. **Understand:** The backend normalizes the logs and passes them to Gemini for clear explanations, impact analysis, and practical remediation guidance.
-3. **Prioritize:** Gemini analyzes the collection of findings globally and prioritizes which vulnerabilities should be addressed first based on severity, evidence, exposure, and potential impact.
-4. **Remediate:** The dashboard provides testers and developers with explicit exploit walkthroughs and production-ready source code fixes.
-5. **Verify:** After a remediation is applied, users can trigger a verification scan to compare new results against original findings and visually confirm that the flaw was resolved.
+The project combines **OWASP ZAP**, **FastAPI**, **Streamlit**, and a planned **Gemini API** integration.
 
 ---
 
-## ✨ Core Features
+## 🔄 Project Workflow
 
-* **OWASP ZAP Dynamic Scanning:** Automated dynamic application security testing (DAST) mapping out the target web application attack surface.
-* **Gemini-Powered Intelligence:** Automated translation of raw scanner metrics into comprehensive risk explanations and threat impact summaries.
-* **Contextual Risk Prioritization:** Intelligent sorting of issues based on dynamic factors such as vulnerability exposure footprint, structural evidence, and server exposure.
-* **Dual-Action Frontend Dashboard Tabs:** 
-  * **Exploitation Tab:** Step-by-step offensive testing concepts and proof-of-concepts drafted by Gemini to help recreate the issue.
-  * **Remediation Tab:** Production-ready code patches and server hardening templates written by Gemini to solve the issue.
-* **Regression & Verification Scanner:** Side-by-side comparison engine that cross-references historic scan baselines with live testing payloads to track resolved entries.
-* **Slack Collaborative Channel Sync:** Instant formatting and broadcasting of critical-path path exposures into active team notification spaces via Incoming Webhooks.
+The intended ZAPini workflow is:
+
+```text
+Target Website
+      ↓
+OWASP ZAP Scan
+      ↓
+Vulnerability Findings
+      ↓
+AI Analysis & Prioritization
+      ↓
+Remediation
+      ↓
+Verification Scan
+```
 
 ---
 
-## 🏗️ System Architecture
-[ Frontend: Streamlit Web UI ]│  ▲▼  │ (REST API Payload Exchange)[ Backend: FastAPI Engine ] ──(Trigger DAST Scans)──► [ Headless OWASP ZAP Container ]│  ▲                                                     │▼  │ (Context Injection Logs)                             ▼[ Gemini API (JSON Mode) ] ◄────────────────────────────────────┘
+## ✅ What We Completed During the Competition
 
+Due to the limited hackathon development time, we focused on getting the core application working.
+
+### Completed
+
+* **OWASP ZAP scanning**
+
+  * Automated web application vulnerability scanning.
+  * Successfully connected the scanning workflow to the application.
+
+* **FastAPI backend**
+
+  * Handles communication between the frontend and scanning system.
+  * Processes scan results for the dashboard.
+
+* **Streamlit dashboard**
+
+  * Displays scan information and vulnerability results.
+  * Includes a **Suggestions** tab for recommended actions.
+
+### Planned but Not Integrated
+
+We designed several additional features but did not have enough time to complete them during the competition:
+
+* Gemini API vulnerability explanations
+* AI-powered vulnerability prioritization
+* Automated remediation guidance
+* Remediation verification and before/after comparison
+* Slack notifications
+* Full Google Stitch UI integration
+
+These features represent the intended next stage of ZAPini.
+
+---
+
+## 🏗️ Architecture
+
+```text
+┌─────────────────────┐
+│ Streamlit Frontend  │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│   FastAPI Backend   │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│     OWASP ZAP       │
+│    DAST Scanner     │
+└─────────────────────┘
+```
+
+### Planned AI Extension
+
+```text
+OWASP ZAP
+    ↓
+FastAPI
+    ↓
+Gemini API
+    ↓
+Explanation
+Prioritization
+Remediation
+    ↓
+Streamlit Dashboard
+```
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Frontend Panel:** Streamlit (Python Dashboard Component Ecosystem)
-* **Orchestration Layer:** FastAPI (Python Server Framework)
-* **Scan Automation:** OWASP ZAP API (Dynamic Application Security Testing Docker Image)
-* **Cognitive Intelligence:** Gemini API (`gemini-2.5-flash` Core Engine Setup)
+* **Frontend:** Streamlit
+* **Backend:** FastAPI
+* **Security Scanner:** OWASP ZAP
+* **Planned AI:** Google Gemini API
+* **UI Design:** Google Stitch
+* **Language:** Python
 
 ---
 
-## 🚀 Installation & Local Environment Setup
+## 🎨 Google Stitch UI Design
 
-### 📋 Prerequisites
-Ensure you have the following frameworks installed on your system before setting up your workspace:
-* Python 3.10+
-* Docker (Required for heading headless ZAP container images locally)
-* Git
+Our planned UI was designed using Google Stitch:
 
-### 🔧 Step 1: Clone the Project Space
+[**View the ZAPini Google Stitch Design**](https://aistudio.google.com/apps/80e8b93e-ad14-432f-86a3-63479c070f4a?showAssistant=true&showPreview=true&fullscreenApplet=true)
+
+We did not have enough time during the competition to fully integrate the Stitch-designed interface into the application.
+
+---
+
+## 🚀 Installation
+
+### 1. Clone the repository
+
 ```bash
-git clone https://github.com
-cd vulnpulse
+git clone <repository-url>
+cd <repository-folder>
 ```
 
-### 🐍 Step 2: Establish Python Dependencies
-Use separate environment contexts to prevent dependency overlap problems:
+### 2. Install dependencies
+
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 🔑 Step 3: Define Environment Secrets
-Create a `.env` configuration file in your backend application root path directory:
-```env
-GEMINI_API_KEY=your_google_gemini_api_key_here
-SLACK_WEBHOOK_URL=https://slack.com
+### 3. Create a virtual environment *(recommended)*
+
+```bash
+python -m venv venv
+```
+
+Activate it:
+
+**Windows**
+
+```bash
+venv\Scripts\activate
+```
+
+**Mac/Linux**
+
+```bash
+source venv/bin/activate
 ```
 
 ---
 
-## 🏃 Execution Commands
+## ▶️ Run the Application
 
-### ⚡ Running the FastAPI Backend Core
-Launch your orchestration engine instance first:
+Open **three separate terminals**.
+
+### Terminal 1 — DAST Backend
+
 ```bash
-uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
+uvicorn dast_backend:app --reload --port 9000
 ```
 
-### 🖥️ Running the Streamlit Frontend Web App
-Open an alternative console terminal window layout and execute the dashboard layer interface:
+### Terminal 2 — Main FastAPI Backend
+
 ```bash
-streamlit run frontend/app.py
+uvicorn main:app --reload --port 8000
 ```
-Your default browser will launch automatically at `http://localhost:8501`.
 
+### Terminal 3 — Streamlit Frontend
 
+```bash
+streamlit run frontend.py
+```
 
-## Helpful Notes from Workshop to win your first Hackathon
-  
-### 1. UI Design 
-* **Stitch:** Use Stitch platform to create UI design 
-* **Appearance:** Create a polished UI. It can be minimalistic. 
+Streamlit will provide a local URL, usually:
 
-### 2. Tips to winning your first Hackathon 
-* **Creativity:** Make sure that your app is creative
-* **Impact:** Ask yourself is your project helping only one person or multiple people (thousands).
+```text
+http://localhost:8501
+```
 
-### 3. Application Development 
-* **Antigravity IDE:** Builds apps fast
+---
 
-### 4. Effective Prompt Writing: From Good to Powerful 
-* **Give a Role**
-* **Define the Goal**
-* **Provide Context**
-* **Does it Need AI**
-* **Create the Vibe**
-* **Optional: Add a visual** 
+## 🧪 Competition Status
 
-### 4. Presentation 
-* **Time Limit:** Make sure that you are able to present your product and demonstrate it within 4 minutes.
+ZAPini successfully demonstrated the core security scanning workflow during the competition.
 
-### 5. ChatGPT Suggestion 
-* **Elevating our Project to the next level:** (https://chatgpt.com/share/6ab83fc1-b830-83e9-9852-d22558304129)
+**OWASP ZAP:** Working
+**FastAPI Backend:** Working
+**Streamlit Dashboard:** Working
+**Suggestions Tab:** Integrated
+**Gemini API:** Planned, but not integrated before the competition deadline
+**Stitch UI:** Designed, but not fully integrated before the competition deadline
+
+The project was intentionally structured so that Gemini and the additional remediation features can be added in future development.
+
+---
+
+## 🔮 Future Development
+
+The next major version of ZAPini would extend the existing scanning workflow with:
+
+1. **Gemini vulnerability explanations**
+2. **AI vulnerability prioritization**
+3. **Remediation recommendations**
+4. **Remediation verification**
+5. **Before-and-after security comparisons**
+6. **Slack team notifications**
+7. **Full Stitch UI integration**
+
+The long-term goal is to turn ZAPini from a vulnerability dashboard into a complete:
+
+**Scan → Understand → Prioritize → Remediate → Verify**
+
+security workflow.
+
+---
+
+## ⚠️ Responsible Use
+
+ZAPini should only be used to test systems that you own or have explicit authorization to assess.
